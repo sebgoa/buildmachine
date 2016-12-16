@@ -1,0 +1,12 @@
+  - name: Start single build machine
+    local_action:
+      module: cs_instance
+      name: "{{ node_prefix }}"
+      template: "{{ template }}"
+      service_offering: "{{ instance_type }}"
+      ssh_key: "{{ ssh_key }}"
+      security_groups: [ '{{ security_group_name }}' ]
+      user_data: "{{ lookup('template', '../templates/build.j2') }}"
+    register: build
+    
+  - debug: msg='build machine IP is {{ build.default_ip }}'

@@ -1,0 +1,26 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+lxd:
+    init:
+        network_address: 0.0.0.0
+        network_port: 8443
+        storage_backend: dir
+    bridge:
+        mode: new
+        name: lxbr0
+        ipv4_address: 10.0.0.1
+        ipv4_netmask: 24
+        ipv4_dhcp_first: 10.0.0.10
+        ipv4_dhcp_last: 10.0.0.254
+        ipv4_dhcp_leases: 254
+        ipv4_nat: true
+        domain: lxd
+runcmd:
+  - ["ssh-keygen", -t, "rsa", -N ,"", -f ,"/home/ubuntu/.ssh/id_rsa"]
+packages:
+  - python-minimal
+  - make
+  - gcc
+  - debconf-utils
+  - python-pip

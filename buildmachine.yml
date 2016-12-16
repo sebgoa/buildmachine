@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+    ssh_key: exoscale
+    security_group_name: default
+    node_prefix: yaya
+    template: Linux Ubuntu 16.04 LTS 64-bit 100G Disk (2016-10-20-85bb6c) 
+    instance_type: Extra-large
+
+  roles:
+    - common
+    - build

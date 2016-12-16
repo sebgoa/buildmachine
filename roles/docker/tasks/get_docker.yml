@@ -1,0 +1,69 @@
+# Get Docker
+
+  - name: update APT
+    apt:
+      update_cache: yes
+    become: true
+
+  - name: HTTPS APT transport for Docker repository
+    apt:
+      name: apt-transport-https
+      state: present
+    become: true
+
+  - name: CA certificates
+    apt:
+      name: ca-certificates
+      state: present
+    become: true
+
+  - name: Read uname
+    shell: uname -r
+    register: uname_output
+    become: true
+
+  - name: Install linux-image-extra-* packages to enable AuFS driver
+    apt: pkg={{ item }} state=present
+    with_items:
+      - linux-image-extra-{{ uname_output.stdout }}
+      - linux-image-extra-virtual
+    become: true
+
+  - name: Add Docker repository key
+    apt_key:
+      id: 58118E89F3A912897C070ADBF76221572C52609D 
+      keyserver: hkp://ha.pool.sks-keyservers.net:80 
+      state: present
+    register: add_repository_key
+    ignore_errors: true
+    become: true
+
+  - name: Add Docker repository and update apt cache
+    apt_repository:
+      repo: deb https://apt.dockerproject.org/repo ubuntu-xenial main 
+      filename: docker
+      mode: '644'
+      update_cache: yes
+      state: present
+    become: true
+
+  - name: Install (or update) docker package
+    apt:
+      name: docker-engine
+      state: present
+      update_cache: yes
+    become: true
+
+  - name: Start Docker
+    service:
+      name: docker
+      state: started
+      enabled: yes
+    become: true
+
+  - name: Add ubuntu user to the docker group
+    user:
+      name:   ubuntu
+      groups: docker
+      append: yes
+    become: true

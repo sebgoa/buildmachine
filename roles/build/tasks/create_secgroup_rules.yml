@@ -1,0 +1,18 @@
+# Add Rule to etcd security group
+
+#  - name: etcd access for k8s
+#    local_action:
+#     module: cs_securitygroup_rule
+#     name: "{{ etcd_security_group_name }}"
+#     start_port: 4001
+#     end_port: 4001
+#     user_security_group: "{{ k8s_security_group_name }}"
+
+# external access
+
+  - name: SSH 
+    local_action:
+     module: cs_securitygroup_rule
+     security_group: "{{ security_group_name }}"
+     start_port: 22
+     end_port: 22
